@@ -50,7 +50,7 @@ end
     finally
         # In MCP 0.6.1 stop! only changes server.active. Closing the transport
         # also releases the receive loop blocked on its request queue.
-        close(transport)
+        MCP.close(transport)
         wait(task)
     end
 end
