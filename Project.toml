@@ -1,0 +1,10 @@
+name = "PkgFactoryMCP"
+uuid = "f82bd02c-d870-4408-a1ff-02f18d06f713"
+authors = ["Shuhei Ohno"]
+version = "0.0.1"
+
+[compat]
+julia = "1.12"
+
+[workspace]
+projects = ["test"]
