@@ -3,7 +3,21 @@ uuid = "f82bd02c-d870-4408-a1ff-02f18d06f713"
 authors = ["Shuhei Ohno"]
 version = "0.0.1"
 
+[deps]
+JSON3 = "0f8b85d8-7281-11e9-16c2-39a750bddbf1"
+ModelContextProtocol = "c58f755f-f2a7-4f48-bf29-4e9659b78499"
+PkgFactory = "f5938637-db80-4a7e-b041-f9483a1b56a7"
+UUIDs = "cf7118a7-6976-5b1a-9a39-7adc72f591a4"
+
+[sources]
+PkgFactory = {url = "https://github.com/ohno/PkgFactory.jl.git", rev = "537d3134d60a39aea25b133eb553b4768e7b7731"}
+ModelContextProtocol = {url = "https://github.com/JuliaSMLM/ModelContextProtocol.jl.git", rev = "v0.6.1"}
+
 [compat]
+JSON3 = "1"
+ModelContextProtocol = "0.6.1"
+PkgFactory = "0.0.5"
+UUIDs = "1"
 julia = "1.12"
 
 [workspace]

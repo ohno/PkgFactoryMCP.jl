@@ -1,25 +1,143 @@
 # PkgFactoryMCP.jl
 
-[![Julia 1.12+](https://img.shields.io/badge/Julia-1.12+-blue.svg?logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMzUwIiBoZWlnaHQ9IjM1MCIgdmlld0JveD0iMCAwIDM1MCAzNTAiPgo8cGF0aCBmaWxsLXJ1bGU9Im5vbnplcm8iIGZpbGw9InJnYig3OS42JSwgMjMuNSUsIDIwJSkiIGZpbGwtb3BhY2l0eT0iMSIgZD0iTSAxNjMuMzk4NDM4IDI1MCBDIDE2My4zOTg0MzggMjkxLjQyMTg3NSAxMjkuODIwMzEyIDMyNSA4OC4zOTg0MzggMzI1IEMgNDYuOTc2NTYyIDMyNSAxMy4zOTg0MzggMjkxLjQyMTg3NSAxMy4zOTg0MzggMjUwIEMgMTMuMzk4NDM4IDIwOC41NzgxMjUgNDYuOTc2NTYyIDE3NSA4OC4zOTg0MzggMTc1IEMgMTI5LjgyMDMxMiAxNzUgMTYzLjM5ODQzOCAyMDguNTc4MTI1IDE2My4zOTg0MzggMjUwIFogTSAxNjMuMzk4NDM4IDI1MCAiLz4KPHBhdGggZmlsbC1ydWxlPSJub256ZXJvIiBmaWxsPSJyZ2IoMjIlLCA1OS42JSwgMTQuOSUpIiBmaWxsLW9wYWNpdHk9IjEiIGQ9Ik0gMjUwIDEwMCBDIDI1MCAxNDEuNDIxODc1IDIxNi40MjE4NzUgMTc1IDE3NSAxNzUgQyAxMzMuNTc4MTI1IDE3NSAxMDAgMTQxLjQyMTg3NSAxMDAgMTAwIEMgMTAwIDU4LjU3ODEyNSAxMzMuNTc4MTI1IDI1IDE3NSAyNSBDIDIxNi40MjE4NzUgMjUgMjUwIDU4LjU3ODEyNSAyNTAgMTAwIFogTSAyNTAgMTAwICIvPgo8cGF0aCBmaWxsLXJ1bGU9Im5vbnplcm8iIGZpbGw9InJnYig1OC40JSwgMzQuNSUsIDY5LjglKSIgZmlsbC1vcGFjaXR5PSIxIiBkPSJNIDMzNi42MDE1NjIgMjUwIEMgMzM2LjYwMTU2MiAyOTEuNDIxODc1IDMwMy4wMjM0MzggMzI1IDI2MS42MDE1NjIgMzI1IEMgMjIwLjE3OTY4OCAzMjUgMTg2LjYwMTU2MiAyOTEuNDIxODc1IDE4Ni42MDE1NjIgMjUwIEMgMTg2LjYwMTU2MiAyMDguNTc4MTI1IDIyMC4xNzk2ODggMTc1IDI2MS42MDE1NjIgMTc1IEMgMzAzLjAyMzQzOCAxNzUgMzM2LjYwMTU2MiAyMDguNTc4MTI1IDMzNi42MDE1NjIgMjUwIFogTSAzMzYuNjAxNTYyIDI1MCAiLz4KPGRlc2M%2BSnVsaWEgZG90cywgY29weXJpZ2h0IDIwMTItMjAyMiBTdGVmYW4gS2FycGluc2tpLiBDQyBCWS1OQy1TQSA0LjAuIGh0dHBzOi8vZ2l0aHViLmNvbS9KdWxpYUxhbmcvanVsaWEtbG9nby1ncmFwaGljczwvZGVzYz48L3N2Zz4%3D)](https://julialang.org/downloads/)
-[![CI](https://github.com/ohno/PkgFactoryMCP.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/ohno/PkgFactoryMCP.jl/actions/workflows/CI.yml?query=branch%3Amain)
+[![CI](https://github.com/ohno/PkgFactoryMCP.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/ohno/PkgFactoryMCP.jl/actions/workflows/CI.yml)
 
-An MCP server for creating Julia packages with PkgFactory.jl.
+Create Julia package repositories from an AI application using
+[PkgFactory.jl](https://github.com/ohno/PkgFactory.jl) and
+[ModelContextProtocol.jl](https://github.com/JuliaSMLM/ModelContextProtocol.jl).
+Requires Julia 1.12 or newer. Supports stdio and authenticated Streamable HTTP.
 
-## Quick Start
+## Quick start
 
-Run the following command in the Julia REPL or a notebook:
+Clone the repository and instantiate its project. The pinned `[sources]` entries
+install the required PkgFactory API and MCP implementation; this checkout workflow
+also works while PkgFactory is not in the General registry.
 
-```julia
-import Pkg; Pkg.add(url="https://github.com/ohno/PkgFactoryMCP.jl.git")
+```sh
+git clone https://github.com/ohno/PkgFactoryMCP.jl.git
+cd PkgFactoryMCP.jl
+julia --project=. --startup-file=no -e 'using Pkg; Pkg.instantiate()'
+julia --project=. --startup-file=no bin/pkgfactory-mcp.jl --read-only
 ```
 
-After installation, load the package and verify it works:
+The final command waits for MCP messages on stdin. Configure your MCP client to
+launch it; this is not an interactive Julia REPL. Omit `--read-only` to enable
+repository creation and supply `GITHUB_TOKEN` (or `GH_TOKEN`) in the server's
+environment. The token is only read when creation is requested.
+
+For clients using the `mcpServers` configuration format:
+
+```json
+{
+  "mcpServers": {
+    "pkgfactory": {
+      "command": "julia",
+      "args": [
+        "--project=/absolute/path/to/PkgFactoryMCP.jl",
+        "--startup-file=no",
+        "/absolute/path/to/PkgFactoryMCP.jl/bin/pkgfactory-mcp.jl"
+      ]
+    }
+  }
+}
+```
+
+Provide credentials through your client's secret/environment settings. On
+Windows, forward slashes work in these paths. Logs go to stderr; stdout is
+reserved for MCP messages. Allow enough startup time for Julia's first load.
+
+## Tools
+
+| Tool | Input | Result |
+| --- | --- | --- |
+| `list_templates` | `{}` | Available template names |
+| `preview_package` | Package settings | Saved `plan_id`, normalized repository, visibility, and planned filenames |
+| `create_package` | `{"plan_id": "..."}` | Repository URL and whether setup was resumed |
+
+Example input to `preview_package`:
+
+```json
+{
+  "owner": "octocat",
+  "name": "MyPackage",
+  "authors": ["The Octocat"],
+  "description": "A package for my research",
+  "template": "minimum",
+  "visibility": "private"
+}
+```
+
+The defaults are **minimum** and **private**. `name` may end in `.jl`.
+`resume` is an optional boolean, defaulting to `false`. Preview validates settings
+without GitHub access; it does not check whether a remote repository exists.
+
+Present the preview to the user and execute only within their authorization.
+Creation accepts the saved plan ID, so settings cannot be changed between
+preview and execution. The client controls user approval: a plan ID itself is
+not proof of human consent. Tokens are never tool arguments.
+
+Completed plans return the same result on retry while retained. Plans expire
+after 15 minutes by default and do not survive server restart. After a failed
+creation, inspect GitHub before making a new preview with `resume: true`.
+
+## HTTP and HTTPS
+
+For one trusted operator, set **different** `MCP_AUTH_TOKEN` and `GITHUB_TOKEN`
+secrets, then start:
+
+```sh
+julia --project=. --startup-file=no bin/pkgfactory-mcp.jl --transport http --port 8080
+```
+
+Connect to `http://127.0.0.1:8080/mcp` with
+`Authorization: Bearer <MCP_AUTH_TOKEN>`. Add `--read-only` to omit creation.
+To make the service reachable outside the machine, bind with `--host 0.0.0.0`
+and place it behind a trusted HTTPS proxy. The HTTP launcher requires auth even
+on loopback. Static bearer tokens work only with clients that support supplying
+them; browser-based OAuth clients should use the Auth0 launcher.
+
+A Dockerfile, a Render Blueprint, and `bin/auth0-server.jl` are included for an
+**Auth0-authenticated, single-operator HTTPS deployment**. See
+[hosting and recovery](docs/hosting.md) for setup and limitations. Deploying to
+Render and creating Auth0/GitHub credentials are separate setup steps.
+
+## Julia API
 
 ```julia
-julia> import PkgFactoryMCP; PkgFactoryMCP.hello()
-"Hello, World!"
+using PkgFactoryMCP
+
+server = build_server(enable_create = false) # no process started
+serve_stdio()                              # blocks until client disconnects
 ```
+
+Applications hosting multiple users can call:
+
+```julia
+serve_http(
+    auth = oauth_middleware,
+    resource_metadata = oauth_resource_metadata,
+    backend_resolver = ctx -> github_backend_for(ctx.authenticated_user),
+    enable_create = true,
+)
+```
+
+The application implements `github_backend_for` and returns a
+`PkgFactory.GitHubAPI` holding that user's GitHub credential. HTTP does not
+implicitly fall back to the server's environment token. Plan access is tied to
+the verified identity. Account linking and a durable credential/operation store
+are application responsibilities; the current package keeps plans in memory.
+
+## Development
+
+```sh
+julia --project=. --startup-file=no -e 'using Pkg; Pkg.test()'
+```
+
+Tests cover protocol discovery, configuration validation, plan execution,
+duplicate calls, user isolation, expiration, error redaction, real stdio, and
+real HTTP authentication. GitHub-changing operations use a mock backend.
 
 ## Acknowledgments
 
-This package is written in the [Julia programming language](https://julialang.org/), built on an initial project template generated using [PkgFactory.jl](https://github.com/ohno/PkgFactory.jl). This repository is hosted on [GitHub](https://github.com/ohno/PkgFactoryMCP.jl), and continuous integration is run using [GitHub Actions](https://github.com/ohno/PkgFactoryMCP.jl/actions).
+Generated from the `minimum` template of
+[PkgFactory.jl](https://github.com/ohno/PkgFactory.jl). MIT licensed.
