@@ -48,7 +48,9 @@ end
         @test length(JSON3.read(String(tools.body)).result.tools) == 2
         println("HTTP: tool discovery succeeded")
     finally
-        MCP.stop!(server)
+        # In MCP 0.6.1 stop! only changes server.active. Closing the transport
+        # also releases the receive loop blocked on its request queue.
+        close(transport)
         wait(task)
     end
 end
